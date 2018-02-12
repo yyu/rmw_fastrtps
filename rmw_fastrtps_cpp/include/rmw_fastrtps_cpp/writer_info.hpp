@@ -31,7 +31,10 @@
 
 #include "rmw/rmw.h"
 
-class WriterInfo : public eprosima::fastrtps::ReaderListener
+using namespace eprosima::fastrtps;
+using namespace eprosima::fastrtps::rtps;
+
+class WriterInfo : public eprosima::fastrtps::rtps::ReaderListener
 {
 public:
   WriterInfo(
@@ -44,11 +47,11 @@ public:
   void
   onNewCacheChangeAdded(
     eprosima::fastrtps::rtps::RTPSReader *,
-    const eprosima::fastrtps::CacheChange_t * const change)
+    const eprosima::fastrtps::rtps::CacheChange_t * const change)
   {
     eprosima::fastrtps::rtps::WriterProxyData proxyData;
     if (change->kind == ALIVE) {
-      eprosima::fastrtps::CDRMessage_t tempMsg(0);
+      eprosima::fastrtps::rtps::CDRMessage_t tempMsg(0);
       tempMsg.wraps = true;
       tempMsg.msg_endian = change->serializedPayload.encapsulation ==
         PL_CDR_BE ? BIGEND : LITTLEEND;

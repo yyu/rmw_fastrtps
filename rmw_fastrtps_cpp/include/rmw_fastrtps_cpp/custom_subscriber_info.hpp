@@ -23,6 +23,9 @@
 #include "fastrtps/subscriber/Subscriber.h"
 #include "fastrtps/subscriber/SubscriberListener.h"
 
+using namespace eprosima::fastrtps;
+using namespace eprosima::fastrtps::rtps;
+
 class SubListener;
 
 typedef struct CustomSubscriberInfo
@@ -46,7 +49,7 @@ public:
 
   void
   onSubscriptionMatched(
-    eprosima::fastrtps::Subscriber * sub, eprosima::fastrtps::MatchingInfo & info)
+    eprosima::fastrtps::Subscriber * sub, eprosima::fastrtps::rtps::MatchingInfo & info)
   {
     (void)sub;
     (void)info;

@@ -23,6 +23,13 @@ extern "C"
 {
 using eprosima::fastrtps::Log;
 
+typedef int rmw_log_severity_t;
+#define RMW_LOG_SEVERITY_DEBUG 1
+#define RMW_LOG_SEVERITY_INFO 2
+#define RMW_LOG_SEVERITY_WARN 3
+#define RMW_LOG_SEVERITY_ERROR 4
+#define RMW_LOG_SEVERITY_FATAL 5
+
 rmw_ret_t
 rmw_set_log_severity(rmw_log_severity_t severity)
 {

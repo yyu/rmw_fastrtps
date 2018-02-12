@@ -27,6 +27,9 @@
 #include "fastrtps/subscriber/SubscriberListener.h"
 #include "fastrtps/subscriber/SampleInfo.h"
 
+using namespace eprosima::fastrtps;
+using namespace eprosima::fastrtps::rtps;
+
 class ServiceListener;
 
 typedef struct CustomServiceInfo

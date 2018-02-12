@@ -32,6 +32,9 @@
 #include "rmw_fastrtps_cpp/custom_client_info.hpp"
 #include "rmw_fastrtps_cpp/custom_participant_info.hpp"
 
+using namespace eprosima::fastrtps;
+using namespace eprosima::fastrtps::rtps;
+
 extern "C"
 {
 rmw_client_t *

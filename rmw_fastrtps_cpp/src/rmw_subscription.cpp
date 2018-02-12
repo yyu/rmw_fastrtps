@@ -30,6 +30,9 @@
 #include "rmw_fastrtps_cpp/custom_subscriber_info.hpp"
 #include "type_support_common.hpp"
 
+using namespace eprosima::fastrtps;
+using namespace eprosima::fastrtps::rtps;
+
 extern "C"
 {
 rmw_subscription_t *
@@ -114,7 +117,7 @@ rmw_create_subscription(
 
 #if HAVE_SECURITY
   // see if our subscriber has a security property set
-  if (eprosima::fastrtps::PropertyPolicyHelper::find_property(
+  if (eprosima::fastrtps::rtps::PropertyPolicyHelper::find_property(
       participant->getAttributes().rtps.properties,
       std::string("dds.sec.crypto.plugin")))
   {

@@ -33,7 +33,10 @@
 #include "fastrtps/rtps/reader/ReaderListener.h"
 #include "fastrtps/rtps/reader/RTPSReader.h"
 
-class ReaderInfo : public eprosima::fastrtps::ReaderListener
+using namespace eprosima::fastrtps;
+using namespace eprosima::fastrtps::rtps;
+
+class ReaderInfo : public eprosima::fastrtps::rtps::ReaderListener
 {
 public:
   ReaderInfo(
@@ -46,7 +49,7 @@ public:
   void
   onNewCacheChangeAdded(
     eprosima::fastrtps::rtps::RTPSReader *,
-    const eprosima::fastrtps::CacheChange_t * const change)
+    const eprosima::fastrtps::rtps::CacheChange_t * const change)
   {
     eprosima::fastrtps::rtps::ReaderProxyData proxyData;
     if (change->kind == ALIVE) {

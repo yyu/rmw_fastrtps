@@ -39,6 +39,9 @@
 #include "rosidl_typesupport_introspection_c/service_introspection.h"
 #include "rosidl_typesupport_introspection_c/visibility_control.h"
 
+using namespace eprosima::fastrtps;
+using namespace eprosima::fastrtps::rtps;
+
 namespace rmw_fastrtps_cpp
 {
 

@@ -26,6 +26,9 @@
 #include "fastrtps/participant/Participant.h"
 #include "fastrtps/publisher/Publisher.h"
 
+using namespace eprosima::fastrtps;
+using namespace eprosima::fastrtps::rtps;
+
 class ClientListener;
 
 typedef struct CustomClientInfo
