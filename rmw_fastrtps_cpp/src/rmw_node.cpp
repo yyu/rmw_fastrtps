@@ -49,6 +49,11 @@
 
 #define ROS_SECURITY_ROOT_DIRECTORY_VAR_NAME "ROS_SECURITY_ROOT_DIRECTORY"
 
+using Domain = eprosima::fastrtps::Domain;
+using Participant = eprosima::fastrtps::Participant;
+using ParticipantAttributes = eprosima::fastrtps::ParticipantAttributes;
+using StatefulReader = eprosima::fastrtps::rtps::StatefulReader;
+
 extern "C"
 {
 rmw_node_t *
@@ -252,7 +257,8 @@ rmw_create_node(
         security_files_paths[5].c_str());
 #endif
       
-      PropertyPolicy property_policy;
+      eprosima::fastrtps::rtps::PropertyPolicy property_policy;
+      using Property = eprosima::fastrtps::rtps::Property;
       property_policy.properties().emplace_back(
         Property("dds.sec.auth.plugin", "builtin.PKI-DH"));
       property_policy.properties().emplace_back(
