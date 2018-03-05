@@ -26,9 +26,6 @@
 #include "fastrtps/participant/Participant.h"
 #include "fastrtps/publisher/Publisher.h"
 
-using namespace eprosima::fastrtps;
-using namespace eprosima::fastrtps::rtps;
-
 class ClientListener;
 
 typedef struct CustomClientInfo
@@ -70,7 +67,7 @@ public:
     eprosima::fastrtps::SampleInfo_t sinfo;
 
     if (sub->takeNextData(response.buffer_, &sinfo)) {
-      if (sinfo.sampleKind == ALIVE) {
+      if (sinfo.sampleKind == eprosima::fastrtps::rtps::ALIVE) {
         response.sample_identity_ = sinfo.related_sample_identity;
 
         if (info_->writer_guid_ == response.sample_identity_.writer_guid()) {

@@ -23,9 +23,6 @@
 #include "fastrtps/subscriber/Subscriber.h"
 #include "fastrtps/subscriber/SubscriberListener.h"
 
-using namespace eprosima::fastrtps;
-using namespace eprosima::fastrtps::rtps;
-
 class SubListener;
 
 typedef struct CustomSubscriberInfo

@@ -19,9 +19,6 @@
 
 #include "rmw/rmw.h"
 
-using namespace eprosima::fastrtps;
-using namespace eprosima::fastrtps::rtps;
-
 typedef struct CustomPublisherInfo
 {
   eprosima::fastrtps::Publisher * publisher_;

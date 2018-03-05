@@ -31,9 +31,6 @@
 
 #include "rmw/rmw.h"
 
-using namespace eprosima::fastrtps;
-using namespace eprosima::fastrtps::rtps;
-
 class WriterInfo : public eprosima::fastrtps::rtps::ReaderListener
 {
 public:
@@ -50,11 +47,14 @@ public:
     const eprosima::fastrtps::rtps::CacheChange_t * const change)
   {
     eprosima::fastrtps::rtps::WriterProxyData proxyData;
-    if (change->kind == ALIVE) {
+    if (change->kind == eprosima::fastrtps::rtps::ALIVE) {
       eprosima::fastrtps::rtps::CDRMessage_t tempMsg(0);
       tempMsg.wraps = true;
-      tempMsg.msg_endian = change->serializedPayload.encapsulation ==
-        PL_CDR_BE ? BIGEND : LITTLEEND;
+      if (PL_CDR_BE == change->serializedPayload.encapsulation) {
+        tempMsg.msg_endian = eprosima::fastrtps::rtps::BIGEND;
+      } else {
+        tempMsg.msg_endian = eprosima::fastrtps::rtps::LITTLEEND;
+      }
       tempMsg.length = change->serializedPayload.length;
       tempMsg.max_size = change->serializedPayload.max_size;
       tempMsg.buffer = change->serializedPayload.data;
@@ -78,7 +78,7 @@ public:
 
     bool trigger = false;
     mapmutex.lock();
-    if (change->kind == ALIVE) {
+    if (change->kind == eprosima::fastrtps::rtps::ALIVE) {
       topicNtypes[fqdn].push_back(proxyData.typeName());
       trigger = true;
     } else {
