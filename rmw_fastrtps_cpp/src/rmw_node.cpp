@@ -174,7 +174,7 @@ get_security_file_paths(
   std::array<std::string, 6> & security_files_paths, const char * node_secure_root)
 {
   // here assume only 6 files for security
-  const char * file_names[6] = {"ca.cert.pem", "cert.pem", "key.pem", "ca.cert.pem", "governance.smime", "permissions.smime"};
+  const char * file_names[6] = {"ca.cert.pem", "cert.pem", "key.pem", "ca.cert.pem", "governance.p7s", "permissions.p7s"};
   size_t num_files = sizeof(file_names) / sizeof(char *);
 
   std::string file_prefix("file://");
@@ -266,8 +266,6 @@ rmw_create_node(
         security_files_paths[2]));
       property_policy.properties().emplace_back(
         Property("dds.sec.crypto.plugin", "builtin.AES-GCM-GMAC"));
-      property_policy.properties().emplace_back(
-        Property("rtps.participant.rtps_protection_kind", "ENCRYPT"));
 
       property_policy.properties().emplace_back(Property("dds.sec.access.plugin", "builtin.Access-Permissions"));
       property_policy.properties().emplace_back(Property("dds.sec.access.builtin.Access-Permissions.permissions_ca", security_files_paths[3]));
