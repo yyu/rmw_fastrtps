@@ -127,7 +127,8 @@ rmw_create_client(
 
   subscriberParam.topic.topicKind = eprosima::fastrtps::rtps::NO_KEY;
   subscriberParam.topic.topicDataType = response_type_name;
-  subscriberParam.historyMemoryPolicy = eprosima::fastrtps::rtps::PREALLOCATED_WITH_REALLOC_MEMORY_MODE;
+  subscriberParam.historyMemoryPolicy =
+    eprosima::fastrtps::rtps::PREALLOCATED_WITH_REALLOC_MEMORY_MODE;
   rcutils_ret_t ret = _assign_partitions_to_attributes(
     service_name, ros_service_response_prefix,
     qos_policies->avoid_ros_namespace_conventions, &subscriberParam);
@@ -140,7 +141,8 @@ rmw_create_client(
   publisherParam.topic.topicKind = eprosima::fastrtps::rtps::NO_KEY;
   publisherParam.topic.topicDataType = request_type_name;
   publisherParam.qos.m_publishMode.kind = eprosima::fastrtps::ASYNCHRONOUS_PUBLISH_MODE;
-  publisherParam.historyMemoryPolicy = eprosima::fastrtps::rtps::PREALLOCATED_WITH_REALLOC_MEMORY_MODE;
+  publisherParam.historyMemoryPolicy =
+    eprosima::fastrtps::rtps::PREALLOCATED_WITH_REALLOC_MEMORY_MODE;
   ret = _assign_partitions_to_attributes(
     service_name, ros_service_requester_prefix,
     qos_policies->avoid_ros_namespace_conventions, &publisherParam);

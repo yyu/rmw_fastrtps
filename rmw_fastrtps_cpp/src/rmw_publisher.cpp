@@ -104,11 +104,13 @@ rmw_create_publisher(
   }
 
   publisherParam.qos.m_publishMode.kind = eprosima::fastrtps::ASYNCHRONOUS_PUBLISH_MODE;
-  publisherParam.historyMemoryPolicy = eprosima::fastrtps::rtps::PREALLOCATED_WITH_REALLOC_MEMORY_MODE;
+  publisherParam.historyMemoryPolicy =
+    eprosima::fastrtps::rtps::PREALLOCATED_WITH_REALLOC_MEMORY_MODE;
   publisherParam.topic.topicKind = eprosima::fastrtps::rtps::NO_KEY;
   publisherParam.topic.topicDataType = type_name;
   rcutils_ret_t ret = _assign_partitions_to_attributes(
-    topic_name, ros_topic_prefix, qos_policies->avoid_ros_namespace_conventions, &publisherParam);
+    topic_name, ros_topic_prefix,
+    qos_policies->avoid_ros_namespace_conventions, &publisherParam);
   if (ret != RCUTILS_RET_OK) {
     // error msg already set
     goto fail;

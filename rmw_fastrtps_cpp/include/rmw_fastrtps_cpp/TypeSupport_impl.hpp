@@ -756,7 +756,9 @@ bool TypeSupport<MembersType>::serialize(
 }
 
 template<typename MembersType>
-bool TypeSupport<MembersType>::deserialize(eprosima::fastrtps::rtps::SerializedPayload_t * payload, void * data)
+bool TypeSupport<MembersType>::deserialize(
+  eprosima::fastrtps::rtps::SerializedPayload_t * payload,
+  void * data)
 {
   assert(data);
   assert(payload);
