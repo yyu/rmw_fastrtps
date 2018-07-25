@@ -126,7 +126,8 @@ rmw_create_publisher(
     goto fail;
   }
 
-  info->publisher_ = Domain::createPublisher(participant, publisherParam, nullptr);
+  info->listener_ = new PubListener(info);
+  info->publisher_ = Domain::createPublisher(participant, publisherParam, info->listener_);
 
   if (!info->publisher_) {
     RMW_SET_ERROR_MSG("create_publisher() could not create publisher");
@@ -165,8 +166,14 @@ rmw_create_publisher(
   return rmw_publisher;
 
 fail:
-  if (info) {
-    _delete_typesupport(info->type_support_, info->typesupport_identifier_);
+
+  if (info != nullptr) {
+    if(info->listener_ != nullptr) {
+      delete info->listener_;
+    }
+    if(info->type_support_ != nullptr) {
+      _delete_typesupport(info->type_support_, info->typesupport_identifier_);
+    }
     delete info;
   }
 
@@ -204,6 +211,9 @@ rmw_destroy_publisher(rmw_node_t * node, rmw_publisher_t * publisher)
   if (info != nullptr) {
     if (info->publisher_ != nullptr) {
       Domain::removePublisher(info->publisher_);
+    }
+    if (info->listener_ != nullptr) {
+      delete info->listener_;
     }
     if (info->type_support_ != nullptr) {
       auto impl = static_cast<CustomParticipantInfo *>(node->data);
