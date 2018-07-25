@@ -150,6 +150,9 @@ rmw_create_subscription(
 fail:
 
   if (info != nullptr) {
+    if (info->listener_ != nullptr) {
+      delete info->listener_;
+    }
     if (info->type_support_ != nullptr) {
       _delete_typesupport(info->type_support_, info->typesupport_identifier_);
     }
