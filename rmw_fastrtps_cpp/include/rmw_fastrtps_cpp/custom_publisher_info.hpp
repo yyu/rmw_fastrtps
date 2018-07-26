@@ -18,12 +18,16 @@
 #include <atomic>
 #include <condition_variable>
 #include <mutex>
+#include <set>
 #include <utility>
 
 #include "fastrtps/publisher/Publisher.h"
 #include "fastrtps/publisher/PublisherListener.h"
 
+#include "rcutils/logging_macros.h"
+
 #include "rmw/rmw.h"
+#include "rmw/error_handling.h"
 
 class PubListener;
 
@@ -40,10 +44,9 @@ typedef struct CustomPublisherInfo
 class PubListener : public eprosima::fastrtps::PublisherListener
 {
 public:
-  explicit PubListener(CustomPublisherInfo * info)
-  : conditionMutex_(nullptr), conditionVariable_(nullptr)
+  explicit PubListener(CustomPublisherInfo * info):
+    matched_guard_condition_(nullptr)
   {
-    // Field is not used right now
     (void)info;
   }
 
@@ -52,30 +55,53 @@ public:
     eprosima::fastrtps::Publisher * pub,
     eprosima::fastrtps::rtps::MatchingInfo & info)
   {
-    (void)pub;
-    (void)info;
+    (void) pub;
+    std::lock_guard<std::mutex> lock(internalMutex_);
+    auto guid = info.remoteEndpointGuid;
+
+    if (eprosima::fastrtps::rtps::MATCHED_MATCHING == info.status) {
+      matched_.insert(guid);
+    } else if (eprosima::fastrtps::rtps::REMOVED_MATCHING == info.status) {
+      matched_.erase(guid);
+    }
+    matched_count_ = matched_.size();
+
+    if (matched_guard_condition_) {
+      rmw_ret_t ret = rmw_trigger_guard_condition(matched_guard_condition_);
+      if (ret != RMW_RET_OK) {
+        RCUTILS_LOG_ERROR_NAMED(
+          "rmw_fastrtps_cpp",
+          "failed to trigger matched publisher guard condition: %s",
+          rmw_get_error_string_safe())
+      }
+    }
   }
 
   void
-  attachCondition(std::mutex * conditionMutex, std::condition_variable * conditionVariable)
+  attachGuard(rmw_guard_condition_t * guard_condition)
   {
     std::lock_guard<std::mutex> lock(internalMutex_);
-    conditionMutex_ = conditionMutex;
-    conditionVariable_ = conditionVariable;
+    matched_guard_condition_ = guard_condition;
   }
 
   void
-  detachCondition()
+  detachGuard()
   {
     std::lock_guard<std::mutex> lock(internalMutex_);
-    conditionMutex_ = nullptr;
-    conditionVariable_ = nullptr;
+    matched_guard_condition_ = nullptr;
+  }
+
+  size_t
+  numSubscribers()
+  {
+    return matched_count_;
   }
 
 private:
   std::mutex internalMutex_;
-  std::mutex * conditionMutex_;
-  std::condition_variable * conditionVariable_;
+  std::set<eprosima::fastrtps::rtps::GUID_t> matched_;
+  std::atomic_size_t matched_count_;
+  rmw_guard_condition_t * matched_guard_condition_;
 };
 
 #endif  // RMW_FASTRTPS_CPP__CUSTOM_PUBLISHER_INFO_HPP_

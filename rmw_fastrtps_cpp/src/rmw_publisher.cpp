@@ -127,8 +127,12 @@ rmw_create_publisher(
   }
 
   info->listener_ = new PubListener(info);
-  info->publisher_ = Domain::createPublisher(participant, publisherParam, info->listener_);
+  if (!info->listener_) {
+    RMW_SET_ERROR_MSG("Failed to create PublisherListener");
+    goto fail;
+  }
 
+  info->publisher_ = Domain::createPublisher(participant, publisherParam, info->listener_);
   if (!info->publisher_) {
     RMW_SET_ERROR_MSG("create_publisher() could not create publisher");
     goto fail;
@@ -168,10 +172,10 @@ rmw_create_publisher(
 fail:
 
   if (info != nullptr) {
-    if(info->listener_ != nullptr) {
+    if (info->listener_ != nullptr) {
       delete info->listener_;
     }
-    if(info->type_support_ != nullptr) {
+    if (info->type_support_ != nullptr) {
       _delete_typesupport(info->type_support_, info->typesupport_identifier_);
     }
     delete info;
@@ -183,6 +187,56 @@ fail:
 
   return nullptr;
 }
+
+rmw_ret_t
+rmw_publisher_attach_matched_guard(
+  rmw_publisher_t * publisher,
+  rmw_guard_condition_t * matched_guard_condition)
+{
+  auto error_allocator = rcutils_get_default_allocator();
+  RCUTILS_CHECK_FOR_NULL_WITH_MSG(
+    publisher, "publisher pointer is null", return RMW_RET_ERROR, error_allocator);
+  RCUTILS_CHECK_FOR_NULL_WITH_MSG(
+    matched_guard_condition, "matched_guard_condition pointer is null", return RMW_RET_ERROR,
+    error_allocator);
+
+  if (publisher->implementation_identifier != eprosima_fastrtps_identifier) {
+    RMW_SET_ERROR_MSG("publisher handle not from this implementation");
+    return RMW_RET_ERROR;
+  }
+
+  auto info = static_cast<CustomPublisherInfo *>(publisher->data);
+  RCUTILS_CHECK_FOR_NULL_WITH_MSG(
+    info, "publisher info pointer is null", return RMW_RET_ERROR, error_allocator);
+
+  info->listener_->attachGuard(matched_guard_condition);
+  return RMW_RET_OK;
+}
+
+rmw_ret_t
+rmw_publisher_count_subscribers(
+  const rmw_publisher_t * publisher,
+  size_t * count)
+{
+  auto error_allocator = rcutils_get_default_allocator();
+  RCUTILS_CHECK_FOR_NULL_WITH_MSG(
+    publisher, "publisher pointer is null", return RMW_RET_ERROR, error_allocator);
+  RCUTILS_CHECK_FOR_NULL_WITH_MSG(
+    count, "count pointer is null", return RMW_RET_ERROR, error_allocator);
+
+  if (publisher->implementation_identifier != eprosima_fastrtps_identifier) {
+    RMW_SET_ERROR_MSG("publisher handle not from this implementation");
+    return RMW_RET_ERROR;
+  }
+
+  auto info = static_cast<CustomPublisherInfo *>(publisher->data);
+  RCUTILS_CHECK_FOR_NULL_WITH_MSG(
+    info, "publisher info pointer is null", return RMW_RET_ERROR, error_allocator);
+
+  *count = info->listener_->numSubscribers();
+  return RMW_RET_OK;
+}
+
 
 rmw_ret_t
 rmw_destroy_publisher(rmw_node_t * node, rmw_publisher_t * publisher)
