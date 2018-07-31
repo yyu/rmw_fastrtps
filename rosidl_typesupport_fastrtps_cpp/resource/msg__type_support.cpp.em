@@ -66,7 +66,7 @@ namespace typesupport_fastrtps_cpp
 {
 
 bool
-ROSIDL_TYPESUPPORT_FASTRTPS_CPP_PUBLIC_@(spec.base_type.pkg_name)
+ROSIDL_TYPESUPPORT_FASTRTPS_CPP_PUBLIC_@(pkg_upper)
 cdr_serialize(
   const @(spec.base_type.pkg_name)::@(subfolder)::@(spec.base_type.type) & ros_message,
   eprosima::fastcdr::Cdr & cdr)
@@ -130,7 +130,7 @@ cdr_serialize(
 }
 
 bool
-ROSIDL_TYPESUPPORT_FASTRTPS_CPP_PUBLIC_@(spec.base_type.pkg_name)
+ROSIDL_TYPESUPPORT_FASTRTPS_CPP_PUBLIC_@(pkg_upper)
 cdr_deserialize(
   eprosima::fastcdr::Cdr & cdr,
   @(spec.base_type.pkg_name)::@(subfolder)::@(spec.base_type.type) & ros_message)
@@ -194,7 +194,7 @@ cdr_deserialize(
 }
 
 size_t
-ROSIDL_TYPESUPPORT_FASTRTPS_CPP_PUBLIC_@(spec.base_type.pkg_name)
+ROSIDL_TYPESUPPORT_FASTRTPS_CPP_PUBLIC_@(pkg_upper)
 get_serialized_size(
   const @(spec.base_type.pkg_name)::@(subfolder)::@(spec.base_type.type) & ros_message,
   size_t current_alignment)
@@ -271,7 +271,7 @@ get_serialized_size(
 }
 
 size_t
-ROSIDL_TYPESUPPORT_FASTRTPS_CPP_PUBLIC_@(spec.base_type.pkg_name)
+ROSIDL_TYPESUPPORT_FASTRTPS_CPP_PUBLIC_@(pkg_upper)
 max_serialized_size_@(spec.base_type.type)(
   bool & full_bounded,
   size_t current_alignment)
@@ -396,7 +396,7 @@ namespace rosidl_typesupport_fastrtps_cpp
 {
 
 template<>
-ROSIDL_TYPESUPPORT_FASTRTPS_CPP_EXPORT_@(spec.base_type.pkg_name)
+ROSIDL_TYPESUPPORT_FASTRTPS_CPP_EXPORT_@(pkg_upper)
 const rosidl_message_type_support_t *
 get_message_type_support_handle<@(spec.base_type.pkg_name)::@(subfolder)::@(spec.base_type.type)>()
 {

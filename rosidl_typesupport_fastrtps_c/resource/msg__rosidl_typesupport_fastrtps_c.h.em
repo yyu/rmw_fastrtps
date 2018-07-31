@@ -36,17 +36,17 @@ extern "C"
 {
 #endif
 
-ROSIDL_TYPESUPPORT_FASTRTPS_C_PUBLIC_@(spec.base_type.pkg_name)
+ROSIDL_TYPESUPPORT_FASTRTPS_C_PUBLIC_@(pkg_upper)
 size_t get_serialized_size_@(spec.base_type.pkg_name)__@(subfolder)__@(spec.base_type.type)(
   const void * untyped_ros_message,
   size_t current_alignment);
 
-ROSIDL_TYPESUPPORT_FASTRTPS_C_PUBLIC_@(spec.base_type.pkg_name)
+ROSIDL_TYPESUPPORT_FASTRTPS_C_PUBLIC_@(pkg_upper)
 size_t max_serialized_size_@(spec.base_type.pkg_name)__@(subfolder)__@(spec.base_type.type)(
   bool & full_bounded,
   size_t current_alignment);
 
-ROSIDL_TYPESUPPORT_FASTRTPS_C_PUBLIC_@(spec.base_type.pkg_name)
+ROSIDL_TYPESUPPORT_FASTRTPS_C_PUBLIC_@(pkg_upper)
 const rosidl_message_type_support_t *
   ROSIDL_TYPESUPPORT_INTERFACE__MESSAGE_SYMBOL_NAME(rosidl_typesupport_fastrtps_c, @(spec.base_type.pkg_name), @(subfolder), @(spec.base_type.type))();
 

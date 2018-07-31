@@ -74,6 +74,7 @@ def generate_typesupport_fastrtps_c(args):
                 data = {
                     'spec': spec,
                     'pkg': spec.base_type.pkg_name,
+                    'pkg_upper': spec.base_type.pkg_name.upper(),
                     'msg': spec.msg_name,
                     'type': spec.base_type.type,
                     'subfolder': subfolder,
@@ -94,7 +95,10 @@ def generate_typesupport_fastrtps_c(args):
                     generated_file, generated_filename %
                     convert_camel_case_to_lower_case_underscore(spec.srv_name))
 
-                data = {'spec': spec}
+                data = {
+                    'spec': spec,
+                    'pkg_upper': spec.pkg_name.upper(),
+                }
                 data.update(functions)
                 expand_template(
                     template_file, data, generated_file,

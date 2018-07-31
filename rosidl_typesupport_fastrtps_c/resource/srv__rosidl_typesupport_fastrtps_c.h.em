@@ -31,7 +31,7 @@ extern "C"
 {
 #endif
 
-ROSIDL_TYPESUPPORT_FASTRTPS_C_PUBLIC_@(spec.pkg_name)
+ROSIDL_TYPESUPPORT_FASTRTPS_C_PUBLIC_@(pkg_upper)
 const rosidl_service_type_support_t *
   ROSIDL_TYPESUPPORT_INTERFACE__SERVICE_SYMBOL_NAME(rosidl_typesupport_fastrtps_c, @(spec.pkg_name), @(spec.srv_name))();
 
