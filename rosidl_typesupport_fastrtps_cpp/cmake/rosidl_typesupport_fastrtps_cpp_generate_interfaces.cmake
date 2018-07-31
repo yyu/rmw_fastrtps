@@ -179,9 +179,9 @@ if(fastrtps_GLIBCXX_USE_CXX11_ABI_ZERO)
 endif()
 if(WIN32)
   target_compile_definitions(${rosidl_generate_interfaces_TARGET}${_target_suffix}
-    PRIVATE "ROSIDL_TYPESUPPORT_FASTRTPS_CPP_BUILDING_DLL_${PROJECT_NAME}")
+    PRIVATE "ROSIDL_TYPESUPPORT_FASTRTPS_CPP_BUILDING_DLL_${PROJECT_NAME_UPPER}")
   target_compile_definitions(${rosidl_generate_interfaces_TARGET}${_target_suffix}
-    PRIVATE "EPROSIMA_USER_DLL_EXPORT")
+    PRIVATE "EPROSIMA_USER_DLL_EXPORT_${PROJECT_NAME_UPPER}")
 endif()
 if(NOT WIN32)
   set(_target_compile_flags "-Wall -Wextra -Wpedantic")
