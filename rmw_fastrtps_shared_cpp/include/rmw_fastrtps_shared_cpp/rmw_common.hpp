@@ -15,7 +15,7 @@
 #ifndef RMW_FASTRTPS_SHARED_CPP__RMW_COMMON_HPP_
 #define RMW_FASTRTPS_SHARED_CPP__RMW_COMMON_HPP_
 
-#include "./visibility_control.h"
+#include "visibility_control.h"
 
 #include "rmw/error_handling.h"
 #include "rmw/rmw.h"

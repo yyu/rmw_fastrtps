@@ -15,7 +15,7 @@
 #include "fastcdr/Cdr.h"
 #include "fastcdr/FastBuffer.h"
 
-#include "./type_support_common.hpp"
+#include "type_support_common.hpp"
 
 bool
 _deserialize_ros_message(

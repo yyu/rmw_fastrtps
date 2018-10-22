@@ -18,7 +18,7 @@
 #include "rmw/serialized_message.h"
 #include "rmw/rmw.h"
 
-#include "./type_support_common.hpp"
+#include "type_support_common.hpp"
 
 extern "C"
 {

@@ -28,9 +28,9 @@
 
 #include "rmw_fastrtps_cpp/identifier.hpp"
 
-#include "./namespace_prefix.hpp"
-#include "./qos.hpp"
-#include "./type_support_common.hpp"
+#include "namespace_prefix.hpp"
+#include "qos.hpp"
+#include "type_support_common.hpp"
 
 using Domain = eprosima::fastrtps::Domain;
 using Participant = eprosima::fastrtps::Participant;

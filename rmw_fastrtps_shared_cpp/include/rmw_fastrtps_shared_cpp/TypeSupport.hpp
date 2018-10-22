@@ -25,7 +25,7 @@
 
 #include "rcutils/logging_macros.h"
 
-#include "./visibility_control.h"
+#include "visibility_control.h"
 
 namespace rmw_fastrtps_shared_cpp
 {
