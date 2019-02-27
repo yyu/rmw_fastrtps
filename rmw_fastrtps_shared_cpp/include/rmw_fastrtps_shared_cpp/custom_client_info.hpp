@@ -33,12 +33,16 @@
 #include "fastrtps/publisher/PublisherListener.h"
 
 #include "rmw_fastrtps_shared_cpp/TypeSupport.hpp"
+#include "rmw_fastrtps_shared_cpp/custom_event_info.hpp"
+
 
 class ClientListener;
 class ClientPubListener;
 
-typedef struct CustomClientInfo
+typedef struct CustomClientInfo : public CustomEventInfo
 {
+  virtual ~CustomClientInfo() = default;
+
   rmw_fastrtps_shared_cpp::TypeSupport * request_type_support_;
   rmw_fastrtps_shared_cpp::TypeSupport * response_type_support_;
   eprosima::fastrtps::Subscriber * response_subscriber_;
@@ -50,7 +54,10 @@ typedef struct CustomClientInfo
   ClientPubListener * pub_listener_;
   std::atomic_size_t response_subscriber_matched_count_;
   std::atomic_size_t request_publisher_matched_count_;
+
+  DataListenerInterface * getListener();
 } CustomClientInfo;
+
 
 typedef struct CustomClientResponse
 {
@@ -58,13 +65,12 @@ typedef struct CustomClientResponse
   std::unique_ptr<eprosima::fastcdr::FastBuffer> buffer_;
 } CustomClientResponse;
 
-class ClientListener : public eprosima::fastrtps::SubscriberListener
+class ClientListener : public DataListenerInterface, public eprosima::fastrtps::SubscriberListener
 {
 public:
   explicit ClientListener(CustomClientInfo * info)
   : info_(info), list_has_data_(false),
     conditionMutex_(nullptr), conditionVariable_(nullptr) {}
-
 
   void
   onNewDataMessage(eprosima::fastrtps::Subscriber * sub)
@@ -144,9 +150,14 @@ public:
   }
 
   bool
-  hasData()
+  hasData() const
   {
     return list_has_data_.load();
+  }
+
+  bool hasEvent() const override
+  {
+    return false;
   }
 
   void onSubscriptionMatched(
@@ -207,5 +218,10 @@ private:
   CustomClientInfo * info_;
   std::set<eprosima::fastrtps::rtps::GUID_t> subscriptions_;
 };
+
+inline DataListenerInterface * CustomClientInfo::getListener()
+{
+  return listener_;
+}
 
 #endif  // RMW_FASTRTPS_SHARED_CPP__CUSTOM_CLIENT_INFO_HPP_
