@@ -160,7 +160,7 @@ public:
     return false;
   }
 
-  bool takeNextEvent(void *event) override {
+  bool takeNextEvent(void * /*event*/) override {
     return false;
   }
 
