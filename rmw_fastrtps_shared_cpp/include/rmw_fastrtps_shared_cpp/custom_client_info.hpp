@@ -72,7 +72,7 @@ public:
   : info_(info), list_has_data_(false),
     conditionMutex_(nullptr), conditionVariable_(nullptr) {}
 
-    void
+  void
   onNewDataMessage(eprosima::fastrtps::Subscriber * sub)
   {
     assert(sub);
@@ -160,7 +160,8 @@ public:
     return false;
   }
 
-  bool takeNextEvent(void * /*event*/) override {
+  bool takeNextEvent(void * /*event*/) override
+  {
     return false;
   }
 
