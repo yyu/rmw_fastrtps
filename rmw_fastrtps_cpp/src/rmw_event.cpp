@@ -19,41 +19,29 @@
 #include "rmw_fastrtps_shared_cpp/rmw_common.hpp"
 
 
-rmw_event_t *
-rmw_create_publisher_event(
+rmw_ret_t
+rmw_publisher_event_init(
+  rmw_event_t * event,
   const rmw_publisher_t * publisher,
-  const rmw_event_type_t /*event_type*/)
+  const rmw_event_type_t event_type)
 {
-  return rmw_fastrtps_shared_cpp::__rmw_create_publisher_event(
-    eprosima_fastrtps_identifier, publisher);
-}
-
-rmw_event_t *
-rmw_create_subscription_event(
-  const rmw_subscription_t * subscription,
-  const rmw_event_type_t /*event_type*/)
-{
-  return rmw_fastrtps_shared_cpp::__rmw_create_subscription_event(
-    eprosima_fastrtps_identifier, subscription);
-}
-
-rmw_event_t *
-rmw_create_client_event(const rmw_client_t * client)
-{
-  return rmw_fastrtps_shared_cpp::__rmw_create_client_event(
-    eprosima_fastrtps_identifier, client);
-}
-
-rmw_event_t *
-rmw_create_service_event(const rmw_service_t * service)
-{
-  return rmw_fastrtps_shared_cpp::__rmw_create_service_event(
-    eprosima_fastrtps_identifier, service);
+  return rmw_fastrtps_shared_cpp::__rmw_publisher_event_init(
+    eprosima_fastrtps_identifier, event, publisher, event_type);
 }
 
 rmw_ret_t
-rmw_destroy_event(rmw_event_t * event)
+rmw_subscription_event_init(
+  rmw_event_t * event,
+  const rmw_subscription_t * subscription,
+  const rmw_event_type_t event_type)
 {
-  return rmw_fastrtps_shared_cpp::__rmw_destroy_event(
+  return rmw_fastrtps_shared_cpp::__rmw_subscription_event_init(
+    eprosima_fastrtps_identifier, event, subscription, event_type);
+}
+
+rmw_ret_t
+rmw_event_fini(rmw_event_t * event)
+{
+  return rmw_fastrtps_shared_cpp::__rmw_event_fini(
     eprosima_fastrtps_identifier, event);
 }

@@ -20,14 +20,11 @@
 #include "rmw/error_handling.h"
 #include "rmw/rmw.h"
 #include "rmw/types.h"
+#include "rmw/event.h"
 #include "rmw/names_and_types.h"
 
 namespace rmw_fastrtps_shared_cpp
 {
-
-RMW_FASTRTPS_SHARED_CPP_PUBLIC
-rmw_event_t *
-__rmw_create_client_event(const char * identifier, const rmw_client_t * client);
 
 RMW_FASTRTPS_SHARED_CPP_PUBLIC
 rmw_ret_t
@@ -127,8 +124,12 @@ __rmw_publish_serialized_message(
   const rmw_serialized_message_t * serialized_message);
 
 RMW_FASTRTPS_SHARED_CPP_PUBLIC
-rmw_event_t *
-__rmw_create_publisher_event(const char * identifier, const rmw_publisher_t * publisher);
+rmw_ret_t
+__rmw_publisher_event_init(
+  const char * identifier,
+  rmw_event_t * event,
+  const rmw_publisher_t * publisher,
+  const rmw_event_type_t event_type);
 
 RMW_FASTRTPS_SHARED_CPP_PUBLIC
 rmw_ret_t
@@ -176,10 +177,6 @@ __rmw_send_response(
   const rmw_service_t * service,
   rmw_request_id_t * request_header,
   void * ros_response);
-
-RMW_FASTRTPS_SHARED_CPP_PUBLIC
-rmw_event_t *
-__rmw_create_service_event(const char * identifier, const rmw_service_t * service);
 
 RMW_FASTRTPS_SHARED_CPP_PUBLIC
 rmw_ret_t
@@ -237,8 +234,12 @@ __rmw_service_server_is_available(
   bool * is_available);
 
 RMW_FASTRTPS_SHARED_CPP_PUBLIC
-rmw_event_t *
-__rmw_create_subscription_event(const char * identifier, const rmw_subscription_t * subscription);
+rmw_ret_t
+__rmw_subscription_event_init(
+  const char * identifier,
+  rmw_event_t * event,
+  const rmw_subscription_t * subscription,
+  const rmw_event_type_t event_type);
 
 RMW_FASTRTPS_SHARED_CPP_PUBLIC
 rmw_ret_t
@@ -266,7 +267,7 @@ rmw_ret_t
 __rmw_take_event(
   const char * identifier,
   const rmw_event_t * event_handle,
-  void * event,
+  void * event_info,
   bool * taken);
 
 RMW_FASTRTPS_SHARED_CPP_PUBLIC
@@ -297,7 +298,7 @@ __rmw_take_serialized_message_with_info(
 
 RMW_FASTRTPS_SHARED_CPP_PUBLIC
 rmw_ret_t
-__rmw_destroy_event(const char * identifier, rmw_event_t * event);
+__rmw_event_fini(const char * identifier, rmw_event_t * event);
 
 RMW_FASTRTPS_SHARED_CPP_PUBLIC
 rmw_ret_t

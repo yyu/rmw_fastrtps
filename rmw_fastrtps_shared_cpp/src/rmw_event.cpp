@@ -17,6 +17,7 @@
 
 #include "rmw/allocators.h"
 #include "rmw/error_handling.h"
+#include "rmw/impl/cpp/macros.hpp"
 #include "rmw/rmw.h"
 
 #include "fastrtps/Domain.h"
@@ -36,97 +37,69 @@
 namespace rmw_fastrtps_shared_cpp
 {
 
-rmw_event_t *
-__rmw_create_client_event(const char * identifier, const rmw_client_t * client)
+rmw_ret_t
+__rmw_publisher_event_init(
+  const char * identifier,
+  rmw_event_t * rmw_event,
+  const rmw_publisher_t * publisher,
+  const rmw_event_type_t event_type)
 {
-  if (client->implementation_identifier != identifier) {
-    RMW_SET_ERROR_MSG("client handle not from this implementation");
-    return nullptr;
-  }
-
-  rmw_event_t * rmw_event = rmw_event_allocate();
-  if (nullptr == rmw_event) {
-    RMW_SET_ERROR_MSG("failed to allocate subscription");
-    return nullptr;
-  }
-
-  rmw_event->implementation_identifier = client->implementation_identifier;
-  rmw_event->data = static_cast<CustomEventInfo *>(static_cast<CustomClientInfo *>(client->data));
-
-  return rmw_event;
-}
-
-rmw_event_t *
-__rmw_create_publisher_event(const char * identifier, const rmw_publisher_t * publisher)
-{
-  if (publisher->implementation_identifier != identifier) {
-    RMW_SET_ERROR_MSG("publisher handle not from this implementation");
-    return nullptr;
-  }
-
-  rmw_event_t * rmw_event = rmw_event_allocate();
-  if (nullptr == rmw_event) {
-    RMW_SET_ERROR_MSG("failed to allocate subscription");
-    return nullptr;
+  RMW_CHECK_ARGUMENT_FOR_NULL(publisher, RMW_RET_INVALID_ARGUMENT);
+  RMW_CHECK_TYPE_IDENTIFIERS_MATCH(
+    publisher,
+    publisher->implementation_identifier,
+    identifier,
+    return RMW_RET_INCORRECT_RMW_IMPLEMENTATION);
+  RMW_CHECK_ARGUMENT_FOR_NULL(rmw_event, RMW_RET_INVALID_ARGUMENT);
+  if (nullptr != rmw_event->implementation_identifier) {
+    RMW_SET_ERROR_MSG("expected zero-initialized event");
+    return RMW_RET_INVALID_ARGUMENT;
   }
 
   rmw_event->implementation_identifier = publisher->implementation_identifier;
-  rmw_event->data = static_cast<CustomEventInfo *>(
-    static_cast<CustomPublisherInfo *>(publisher->data));
+  rmw_event->data = static_cast<CustomEventInfo *>(publisher->data);
+  rmw_event->event_type = event_type;
 
-  return rmw_event;
-}
-
-rmw_event_t *
-__rmw_create_service_event(const char * identifier, const rmw_service_t * service)
-{
-  if (service->implementation_identifier != identifier) {
-    RMW_SET_ERROR_MSG("service handle not from this implementation");
-    return nullptr;
-  }
-
-  rmw_event_t * rmw_event = rmw_event_allocate();
-  if (nullptr == rmw_event) {
-    RMW_SET_ERROR_MSG("failed to allocate subscription");
-    return nullptr;
-  }
-
-  rmw_event->implementation_identifier = service->implementation_identifier;
-  rmw_event->data = static_cast<CustomEventInfo *>(static_cast<CustomServiceInfo *>(service->data));
-
-  return rmw_event;
-}
-
-rmw_event_t *
-__rmw_create_subscription_event(const char * identifier, const rmw_subscription_t * subscription)
-{
-  if (subscription->implementation_identifier != identifier) {
-    RMW_SET_ERROR_MSG("subscription handle not from this implementation");
-    return nullptr;
-  }
-
-  rmw_event_t * rmw_event = rmw_event_allocate();
-  if (nullptr == rmw_event) {
-    RMW_SET_ERROR_MSG("failed to allocate subscription");
-    return nullptr;
-  }
-
-  rmw_event->implementation_identifier = subscription->implementation_identifier;
-  rmw_event->data = static_cast<CustomEventInfo *>(
-    static_cast<CustomSubscriberInfo *>(subscription->data));
-
-  return rmw_event;
+  return RMW_RET_OK;
 }
 
 rmw_ret_t
-__rmw_destroy_event(const char * identifier, rmw_event_t * event)
+__rmw_subscription_event_init(
+  const char * identifier,
+  rmw_event_t * rmw_event,
+  const rmw_subscription_t * subscription,
+  const rmw_event_type_t event_type)
 {
-  if (event->implementation_identifier != identifier) {
-    RMW_SET_ERROR_MSG("subscription handle not from this implementation");
-    return RMW_RET_ERROR;
+  RMW_CHECK_ARGUMENT_FOR_NULL(subscription, RMW_RET_INVALID_ARGUMENT);
+  RMW_CHECK_TYPE_IDENTIFIERS_MATCH(
+    subscription,
+    subscription->implementation_identifier,
+    identifier,
+    return RMW_RET_INCORRECT_RMW_IMPLEMENTATION);
+  RMW_CHECK_ARGUMENT_FOR_NULL(rmw_event, RMW_RET_INVALID_ARGUMENT);
+  if (nullptr != rmw_event->implementation_identifier) {
+    RMW_SET_ERROR_MSG("expected zero-initialized event");
+    return RMW_RET_INVALID_ARGUMENT;
   }
 
-  rmw_event_free(event);
+  rmw_event->implementation_identifier = subscription->implementation_identifier;
+  rmw_event->data = static_cast<CustomEventInfo *>(subscription->data);
+  rmw_event->event_type = event_type;
+
+  return RMW_RET_OK;
+}
+
+rmw_ret_t
+__rmw_event_fini(const char * identifier, rmw_event_t * event)
+{
+  RMW_CHECK_ARGUMENT_FOR_NULL(event, RMW_RET_INVALID_ARGUMENT);
+  RMW_CHECK_TYPE_IDENTIFIERS_MATCH(
+    event,
+    event->implementation_identifier,
+    identifier,
+    return RMW_RET_INCORRECT_RMW_IMPLEMENTATION);
+
+  *event = rmw_get_zero_initialized_event();
 
   return RMW_RET_OK;
 }
