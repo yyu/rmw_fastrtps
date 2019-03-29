@@ -125,14 +125,6 @@ __rmw_publish_serialized_message(
 
 RMW_FASTRTPS_SHARED_CPP_PUBLIC
 rmw_ret_t
-__rmw_publisher_event_init(
-  const char * identifier,
-  rmw_event_t * event,
-  const rmw_publisher_t * publisher,
-  const rmw_event_type_t event_type);
-
-RMW_FASTRTPS_SHARED_CPP_PUBLIC
-rmw_ret_t
 __rmw_destroy_publisher(
   const char * identifier,
   rmw_node_t * node,
@@ -235,14 +227,6 @@ __rmw_service_server_is_available(
 
 RMW_FASTRTPS_SHARED_CPP_PUBLIC
 rmw_ret_t
-__rmw_subscription_event_init(
-  const char * identifier,
-  rmw_event_t * event,
-  const rmw_subscription_t * subscription,
-  const rmw_event_type_t event_type);
-
-RMW_FASTRTPS_SHARED_CPP_PUBLIC
-rmw_ret_t
 __rmw_destroy_subscription(
   const char * identifier,
   rmw_node_t * node,
@@ -295,10 +279,6 @@ __rmw_take_serialized_message_with_info(
   rmw_serialized_message_t * serialized_message,
   bool * taken,
   rmw_message_info_t * message_info);
-
-RMW_FASTRTPS_SHARED_CPP_PUBLIC
-rmw_ret_t
-__rmw_event_fini(const char * identifier, rmw_event_t * event);
 
 RMW_FASTRTPS_SHARED_CPP_PUBLIC
 rmw_ret_t
