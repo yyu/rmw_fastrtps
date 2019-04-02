@@ -123,6 +123,6 @@ __rmw_publisher_assert_liveliness(
 
   // info->publisher_->assert_liveliness();
 
-  return RMW_RET_OK;
+  return RMW_RET_UNSUPPORTED;
 }
 }  // namespace rmw_fastrtps_shared_cpp

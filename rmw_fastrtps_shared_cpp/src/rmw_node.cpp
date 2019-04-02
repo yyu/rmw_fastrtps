@@ -388,7 +388,7 @@ __rmw_node_assert_liveliness(
 
   // node_info->participant->assert_liveliness();
 
-  return RMW_RET_OK;
+  return RMW_RET_UNSUPPORTED;
 }
 
 const rmw_guard_condition_t *
