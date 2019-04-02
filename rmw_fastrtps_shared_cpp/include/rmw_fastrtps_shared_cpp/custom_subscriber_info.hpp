@@ -25,18 +25,24 @@
 #include "fastrtps/subscriber/SubscriberListener.h"
 
 #include "rmw_fastrtps_shared_cpp/TypeSupport.hpp"
+#include "rmw_fastrtps_shared_cpp/custom_event_info.hpp"
+
 
 class SubListener;
 
-typedef struct CustomSubscriberInfo
+typedef struct CustomSubscriberInfo : public CustomEventInfo
 {
+  virtual ~CustomSubscriberInfo() = default;
+
   eprosima::fastrtps::Subscriber * subscriber_;
   SubListener * listener_;
   rmw_fastrtps_shared_cpp::TypeSupport * type_support_;
   const char * typesupport_identifier_;
+
+  EventListenerInterface * getListener();
 } CustomSubscriberInfo;
 
-class SubListener : public eprosima::fastrtps::SubscriberListener
+class SubListener : public EventListenerInterface, public eprosima::fastrtps::SubscriberListener
 {
 public:
   explicit SubListener(CustomSubscriberInfo * info)
@@ -96,9 +102,19 @@ public:
   }
 
   bool
-  hasData()
+  hasData() const
   {
     return data_ > 0;
+  }
+
+  bool takeNextEvent(void * /*event*/) override
+  {
+    return false;
+  }
+
+  bool hasEvent() const override
+  {
+    return false;
   }
 
   void
@@ -128,5 +144,10 @@ private:
 
   std::set<eprosima::fastrtps::rtps::GUID_t> publishers_;
 };
+
+inline EventListenerInterface * CustomSubscriberInfo::getListener()
+{
+  return listener_;
+}
 
 #endif  // RMW_FASTRTPS_SHARED_CPP__CUSTOM_SUBSCRIBER_INFO_HPP_

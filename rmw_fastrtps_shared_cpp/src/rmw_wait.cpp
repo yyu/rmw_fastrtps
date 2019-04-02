@@ -131,6 +131,14 @@ __rmw_wait(
     }
   }
 
+  if (events) {
+    for (size_t i = 0; i < events->event_count; ++i) {
+      void * data = events->events[i];
+      auto custom_event_info = static_cast<CustomEventInfo *>(data);
+      custom_event_info->getListener()->attachCondition(conditionMutex, conditionVariable);
+    }
+  }
+
   if (guard_conditions) {
     for (size_t i = 0; i < guard_conditions->guard_condition_count; ++i) {
       void * data = guard_conditions->guard_conditions[i];
@@ -199,6 +207,17 @@ __rmw_wait(
       auto custom_service_info = static_cast<CustomServiceInfo *>(data);
       custom_service_info->listener_->detachCondition();
       if (!custom_service_info->listener_->hasData()) {
+        services->services[i] = 0;
+      }
+    }
+  }
+
+  if (events) {
+    for (size_t i = 0; i < events->event_count; ++i) {
+      void * data = events->events[i];
+      auto custom_event_info = static_cast<CustomEventInfo *>(data);
+      custom_event_info->getListener()->detachCondition();
+      if (!custom_event_info->getListener()->hasEvent()) {
         services->services[i] = 0;
       }
     }
