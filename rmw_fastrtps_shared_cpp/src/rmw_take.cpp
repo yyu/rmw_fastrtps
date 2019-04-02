@@ -100,11 +100,7 @@ __rmw_take_event(
     return RMW_RET_ERROR;
   }
 
-  CustomEventInfo * info = static_cast<CustomEventInfo *>(event_handle->data);
-  RCUTILS_CHECK_FOR_NULL_WITH_MSG(info, "Custom Event Info is null", return RMW_RET_ERROR);
-
-  *taken = info->getListener()->takeNextEvent(event_info);
-  return RMW_RET_OK;
+  return RMW_RET_UNSUPPORTED;
 }
 
 rmw_ret_t
