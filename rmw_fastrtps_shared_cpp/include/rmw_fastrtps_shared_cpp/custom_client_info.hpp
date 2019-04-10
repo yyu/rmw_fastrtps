@@ -32,6 +32,8 @@
 #include "fastrtps/publisher/Publisher.h"
 #include "fastrtps/publisher/PublisherListener.h"
 
+#include "rcpputils/thread_safety_annotations.hpp"
+
 #include "rmw_fastrtps_shared_cpp/TypeSupport.hpp"
 #include "rmw_fastrtps_shared_cpp/custom_event_info.hpp"
 
@@ -115,22 +117,11 @@ public:
   {
     std::lock_guard<std::mutex> lock(internalMutex_);
 
-    auto pop_response = [this](CustomClientResponse & response) -> bool
-      {
-        if (!list.empty()) {
-          response = std::move(list.front());
-          list.pop_front();
-          list_has_data_.store(!list.empty());
-          return true;
-        }
-        return false;
-      };
-
     if (conditionMutex_ != nullptr) {
       std::unique_lock<std::mutex> clock(*conditionMutex_);
-      return pop_response(response);
+      return popResponse(response);
     }
-    return pop_response(response);
+    return popResponse(response);
   }
 
   void
@@ -184,12 +175,23 @@ public:
   }
 
 private:
+  bool popResponse(CustomClientResponse & response) RCPPUTILS_TSA_REQUIRES(internalMutex_)
+  {
+    if (!list.empty()) {
+      response = std::move(list.front());
+      list.pop_front();
+      list_has_data_.store(!list.empty());
+      return true;
+    }
+    return false;
+  };
+
   CustomClientInfo * info_;
   std::mutex internalMutex_;
-  std::list<CustomClientResponse> list;
+  std::list<CustomClientResponse> list RCPPUTILS_TSA_GUARDED_BY(internalMutex_);
   std::atomic_bool list_has_data_;
-  std::mutex * conditionMutex_;
-  std::condition_variable * conditionVariable_;
+  std::mutex * conditionMutex_ RCPPUTILS_TSA_GUARDED_BY(internalMutex_);
+  std::condition_variable * conditionVariable_ RCPPUTILS_TSA_GUARDED_BY(internalMutex_);
   std::set<eprosima::fastrtps::rtps::GUID_t> publishers_;
 };
 

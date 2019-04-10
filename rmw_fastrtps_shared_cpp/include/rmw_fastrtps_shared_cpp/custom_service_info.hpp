@@ -29,6 +29,8 @@
 #include "fastrtps/subscriber/SubscriberListener.h"
 #include "fastrtps/subscriber/SampleInfo.h"
 
+#include "rcpputils/thread_safety_annotations.hpp"
+
 #include "rmw_fastrtps_shared_cpp/TypeSupport.hpp"
 #include "rmw_fastrtps_shared_cpp/custom_event_info.hpp"
 
@@ -165,10 +167,10 @@ public:
 private:
   CustomServiceInfo * info_;
   std::mutex internalMutex_;
-  std::list<CustomServiceRequest> list;
+  std::list<CustomServiceRequest> list RCPPUTILS_TSA_GUARDED_BY(internalMutex_);
   std::atomic_bool list_has_data_;
-  std::mutex * conditionMutex_;
-  std::condition_variable * conditionVariable_;
+  std::mutex * conditionMutex_ RCPPUTILS_TSA_GUARDED_BY(internalMutex_);
+  std::condition_variable * conditionVariable_ RCPPUTILS_TSA_GUARDED_BY(internalMutex_);
 };
 
 inline EventListenerInterface * CustomServiceInfo::getListener()
