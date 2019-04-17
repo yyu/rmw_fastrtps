@@ -24,6 +24,8 @@
 #include "fastrtps/subscriber/Subscriber.h"
 #include "fastrtps/subscriber/SubscriberListener.h"
 
+#include "rcpputils/thread_safety_annotations.hpp"
+
 #include "rmw_fastrtps_shared_cpp/TypeSupport.hpp"
 #include "rmw_fastrtps_shared_cpp/custom_event_info.hpp"
 
@@ -139,10 +141,10 @@ public:
 private:
   std::mutex internalMutex_;
   std::atomic_size_t data_;
-  std::mutex * conditionMutex_;
-  std::condition_variable * conditionVariable_;
+  std::mutex * conditionMutex_ RCPPUTILS_TSA_GUARDED_BY(internalMutex_);
+  std::condition_variable * conditionVariable_ RCPPUTILS_TSA_GUARDED_BY(internalMutex_);
 
-  std::set<eprosima::fastrtps::rtps::GUID_t> publishers_;
+  std::set<eprosima::fastrtps::rtps::GUID_t> publishers_ RCPPUTILS_TSA_GUARDED_BY(internalMutex_);
 };
 
 inline EventListenerInterface * CustomSubscriberInfo::getListener()

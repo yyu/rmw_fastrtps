@@ -98,6 +98,12 @@ __rmw_destroy_node(
   rmw_node_t * node);
 
 RMW_FASTRTPS_SHARED_CPP_PUBLIC
+rmw_ret_t
+__rmw_node_assert_liveliness(
+  const char * identifier,
+  const rmw_node_t * node);
+
+RMW_FASTRTPS_SHARED_CPP_PUBLIC
 const rmw_guard_condition_t *
 __rmw_node_get_graph_guard_condition(const rmw_node_t * node);
 
@@ -125,6 +131,12 @@ __rmw_publish_serialized_message(
 
 RMW_FASTRTPS_SHARED_CPP_PUBLIC
 rmw_ret_t
+__rmw_publisher_assert_liveliness(
+  const char * identifier,
+  const rmw_publisher_t * publisher);
+
+RMW_FASTRTPS_SHARED_CPP_PUBLIC
+rmw_ret_t
 __rmw_destroy_publisher(
   const char * identifier,
   rmw_node_t * node,
@@ -135,6 +147,12 @@ rmw_ret_t
 __rmw_publisher_count_matched_subscriptions(
   const rmw_publisher_t * publisher,
   size_t * subscription_count);
+
+RMW_FASTRTPS_SHARED_CPP_PUBLIC
+rmw_ret_t
+__rmw_publisher_get_actual_qos(
+  const rmw_publisher_t * publisher,
+  rmw_qos_profile_t * qos);
 
 RMW_FASTRTPS_SHARED_CPP_PUBLIC
 rmw_ret_t
