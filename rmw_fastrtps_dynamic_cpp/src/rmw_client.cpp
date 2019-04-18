@@ -136,12 +136,13 @@ rmw_create_client(
 
   subscriberParam.topic.topicKind = eprosima::fastrtps::rtps::NO_KEY;
   subscriberParam.topic.topicDataType = response_type_name;
+  std::string topic_name;
   if (!qos_policies->avoid_ros_namespace_conventions) {
-    subscriberParam.topic.topicName = std::string(ros_service_response_prefix) + service_name;
+    topic_name = std::string(ros_service_response_prefix) + service_name;
   } else {
-    subscriberParam.topic.topicName = service_name;
+    topic_name = service_name;
   }
-  subscriberParam.topic.topicName += "Reply";
+  subscriberParam.topic.topicName = topic_name + "Reply";
 
   if (!impl->leave_middleware_default_qos) {
     publisherParam.qos.m_publishMode.kind = eprosima::fastrtps::ASYNCHRONOUS_PUBLISH_MODE;
@@ -152,11 +153,11 @@ rmw_create_client(
   publisherParam.topic.topicKind = eprosima::fastrtps::rtps::NO_KEY;
   publisherParam.topic.topicDataType = request_type_name;
   if (!qos_policies->avoid_ros_namespace_conventions) {
-    publisherParam.topic.topicName = std::string(ros_service_requester_prefix) + service_name;
+    topic_name = std::string(ros_service_requester_prefix) + service_name;
   } else {
-    publisherParam.topic.topicName = service_name;
+    topic_name = service_name;
   }
-  publisherParam.topic.topicName += "Request";
+  publisherParam.topic.topicName = topic_name + "Request";
 
   RCUTILS_LOG_DEBUG_NAMED(
     "rmw_fastrtps_dynamic_cpp",
