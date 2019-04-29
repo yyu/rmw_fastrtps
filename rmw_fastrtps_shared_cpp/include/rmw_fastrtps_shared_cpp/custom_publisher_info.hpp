@@ -102,8 +102,8 @@ private:
   std::mutex internalMutex_;
   std::set<eprosima::fastrtps::rtps::GUID_t>
   subscriptions_ RCPPUTILS_TSA_GUARDED_BY(internalMutex_);
-  std::mutex * conditionMutex_;
-  std::condition_variable * conditionVariable_;
+  std::mutex * conditionMutex_ RCPPUTILS_TSA_GUARDED_BY(internalMutex_);
+  std::condition_variable * conditionVariable_ RCPPUTILS_TSA_GUARDED_BY(internalMutex_);
 };
 
 inline EventListenerInterface * CustomPublisherInfo::getListener()
