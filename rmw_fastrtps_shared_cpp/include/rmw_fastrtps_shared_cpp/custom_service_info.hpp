@@ -32,11 +32,15 @@
 #include "rcpputils/thread_safety_annotations.hpp"
 
 #include "rmw_fastrtps_shared_cpp/TypeSupport.hpp"
+#include "rmw_fastrtps_shared_cpp/custom_event_info.hpp"
+
 
 class ServiceListener;
 
-typedef struct CustomServiceInfo
+typedef struct CustomServiceInfo : public CustomEventInfo
 {
+  virtual ~CustomServiceInfo() = default;
+
   rmw_fastrtps_shared_cpp::TypeSupport * request_type_support_;
   rmw_fastrtps_shared_cpp::TypeSupport * response_type_support_;
   eprosima::fastrtps::Subscriber * request_subscriber_;
@@ -44,6 +48,8 @@ typedef struct CustomServiceInfo
   ServiceListener * listener_;
   eprosima::fastrtps::Participant * participant_;
   const char * typesupport_identifier_;
+
+  EventListenerInterface * getListener();
 } CustomServiceInfo;
 
 typedef struct CustomServiceRequest
@@ -55,7 +61,7 @@ typedef struct CustomServiceRequest
   : buffer_(nullptr) {}
 } CustomServiceRequest;
 
-class ServiceListener : public eprosima::fastrtps::SubscriberListener
+class ServiceListener : public EventListenerInterface, public eprosima::fastrtps::SubscriberListener
 {
 public:
   explicit ServiceListener(CustomServiceInfo * info)
@@ -142,9 +148,20 @@ public:
   }
 
   bool
-  hasData()
+  hasData() const
   {
     return list_has_data_.load();
+  }
+
+  bool takeNextEvent(void * /*event*/) override
+  {
+    return false;
+  }
+
+  bool
+  hasEvent() const override
+  {
+    return false;
   }
 
 private:
@@ -155,5 +172,10 @@ private:
   std::mutex * conditionMutex_ RCPPUTILS_TSA_GUARDED_BY(internalMutex_);
   std::condition_variable * conditionVariable_ RCPPUTILS_TSA_GUARDED_BY(internalMutex_);
 };
+
+inline EventListenerInterface * CustomServiceInfo::getListener()
+{
+  return listener_;
+}
 
 #endif  // RMW_FASTRTPS_SHARED_CPP__CUSTOM_SERVICE_INFO_HPP_
