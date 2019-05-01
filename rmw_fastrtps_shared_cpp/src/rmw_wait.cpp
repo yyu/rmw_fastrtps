@@ -30,7 +30,8 @@ check_wait_set_for_data(
   const rmw_subscriptions_t * subscriptions,
   const rmw_guard_conditions_t * guard_conditions,
   const rmw_services_t * services,
-  const rmw_clients_t * clients)
+  const rmw_clients_t * clients,
+  const rmw_events_t * events)
 {
   if (subscriptions) {
     for (size_t i = 0; i < subscriptions->subscriber_count; ++i) {
@@ -63,6 +64,16 @@ check_wait_set_for_data(
     }
   }
 
+  if (events) {
+    for (size_t i = 0; i < events->event_count; ++i) {
+      auto event = static_cast<rmw_event_t *>(events->events[i]);
+      auto custom_event_info = static_cast<CustomEventInfo *>(event->data);
+      if (!custom_event_info->getListener()->hasEvent(event->event_type)) {
+        return true;
+      }
+    }
+  }
+
   if (guard_conditions) {
     for (size_t i = 0; i < guard_conditions->guard_condition_count; ++i) {
       void * data = guard_conditions->guard_conditions[i];
@@ -83,7 +94,7 @@ __rmw_wait(
   rmw_guard_conditions_t * guard_conditions,
   rmw_services_t * services,
   rmw_clients_t * clients,
-  rmw_events_t * /*events*/,
+  rmw_events_t * events,
   rmw_wait_set_t * wait_set,
   const rmw_time_t * wait_timeout)
 {
@@ -131,14 +142,13 @@ __rmw_wait(
     }
   }
 
-  // TODO(mm318): implement attachCondition for events when feature becomes available in fastrtps
-  // if (events) {
-  //   for (size_t i = 0; i < events->event_count; ++i) {
-  //     void * data = events->events[i];
-  //     auto custom_event_info = static_cast<CustomEventInfo *>(data);
-  //     custom_event_info->getListener()->attachCondition(conditionMutex, conditionVariable);
-  //   }
-  // }
+  if (events) {
+    for (size_t i = 0; i < events->event_count; ++i) {
+      auto event = static_cast<rmw_event_t *>(events->events[i]);
+      auto custom_event_info = static_cast<CustomEventInfo *>(event->data);
+      custom_event_info->getListener()->attachCondition(conditionMutex, conditionVariable);
+    }
+  }
 
   if (guard_conditions) {
     for (size_t i = 0; i < guard_conditions->guard_condition_count; ++i) {
@@ -154,9 +164,10 @@ __rmw_wait(
   // otherwise the decision to wait might be incorrect
   std::unique_lock<std::mutex> lock(*conditionMutex);
 
-  bool hasData = check_wait_set_for_data(subscriptions, guard_conditions, services, clients);
-  auto predicate = [subscriptions, guard_conditions, services, clients]() {
-      return check_wait_set_for_data(subscriptions, guard_conditions, services, clients);
+  bool hasData = check_wait_set_for_data(
+    subscriptions, guard_conditions, services, clients, events);
+  auto predicate = [subscriptions, guard_conditions, services, clients, events]() {
+      return check_wait_set_for_data(subscriptions, guard_conditions, services, clients, events);
     };
 
   bool timeout = false;
@@ -213,17 +224,16 @@ __rmw_wait(
     }
   }
 
-  // TODO(mm318): implement detachCondition for events when feature becomes available in fastrtps
-  // if (events) {
-  //   for (size_t i = 0; i < events->event_count; ++i) {
-  //     void * data = events->events[i];
-  //     auto custom_event_info = static_cast<CustomEventInfo *>(data);
-  //     custom_event_info->getListener()->detachCondition();
-  //     if (!custom_event_info->getListener()->hasEvent()) {
-  //       services->services[i] = 0;
-  //     }
-  //   }
-  // }
+  if (events) {
+    for (size_t i = 0; i < events->event_count; ++i) {
+      auto event = static_cast<rmw_event_t *>(events->events[i]);
+      auto custom_event_info = static_cast<CustomEventInfo *>(event->data);
+      custom_event_info->getListener()->detachCondition();
+      if (!custom_event_info->getListener()->hasEvent(event->event_type)) {
+        events->events[i] = nullptr;
+      }
+    }
+  }
 
   if (guard_conditions) {
     for (size_t i = 0; i < guard_conditions->guard_condition_count; ++i) {
