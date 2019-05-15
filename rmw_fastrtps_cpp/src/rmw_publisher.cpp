@@ -150,6 +150,10 @@ rmw_create_publisher(
     publisherParam.topic.topicName = topic_name;
   }
 
+  publisherParam.qos.m_disablePositiveACKs.enabled = true;
+  publisherParam.qos.m_disablePositiveACKs.duration =
+          eprosima::fastrtps::Duration_t(eprosima::fastrtps::c_TimeInfinite);
+
   // 1 Heartbeat every 10ms
   // publisherParam.times.heartbeatPeriod.seconds = 0;
   // publisherParam.times.heartbeatPeriod.fraction = 42949673;

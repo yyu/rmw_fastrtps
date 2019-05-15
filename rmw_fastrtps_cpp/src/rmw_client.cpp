@@ -29,6 +29,8 @@
 #include "./qos.hpp"
 #include "./type_support_common.hpp"
 
+#include "fastrtps/rtps/common/Time_t.h"
+
 using Domain = eprosima::fastrtps::Domain;
 using Participant = eprosima::fastrtps::Participant;
 using TopicDataType = eprosima::fastrtps::TopicDataType;
@@ -137,6 +139,10 @@ rmw_create_client(
   }
   subscriberParam.topic.topicName = topic_name + "Reply";
 
+  subscriberParam.qos.m_disablePositiveACKs.enabled = true;
+  subscriberParam.qos.m_disablePositiveACKs.duration =
+          eprosima::fastrtps::Duration_t(eprosima::fastrtps::c_TimeInfinite);
+
   if (!impl->leave_middleware_default_qos) {
     publisherParam.qos.m_publishMode.kind = eprosima::fastrtps::ASYNCHRONOUS_PUBLISH_MODE;
     publisherParam.historyMemoryPolicy =
@@ -151,6 +157,10 @@ rmw_create_client(
     topic_name = service_name;
   }
   publisherParam.topic.topicName = topic_name + "Request";
+
+  publisherParam.qos.m_disablePositiveACKs.enabled = true;
+  publisherParam.qos.m_disablePositiveACKs.duration =
+          eprosima::fastrtps::Duration_t(eprosima::fastrtps::c_TimeInfinite);
 
   RCUTILS_LOG_DEBUG_NAMED(
     "rmw_fastrtps_cpp",

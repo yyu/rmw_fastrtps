@@ -148,6 +148,10 @@ rmw_create_subscription(
     subscriberParam.topic.topicName = topic_name;
   }
 
+  subscriberParam.qos.m_disablePositiveACKs.enabled = true;
+  subscriberParam.qos.m_disablePositiveACKs.duration =
+          eprosima::fastrtps::Duration_t(eprosima::fastrtps::c_TimeInfinite);
+
   if (!get_datareader_qos(*qos_policies, subscriberParam)) {
     RMW_SET_ERROR_MSG("failed to get datareader qos");
     goto fail;
