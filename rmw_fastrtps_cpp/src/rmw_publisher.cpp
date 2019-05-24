@@ -111,6 +111,8 @@ rmw_create_publisher(
   eprosima::fastrtps::PublisherAttributes publisherParam;
   const eprosima::fastrtps::rtps::GUID_t * guid = nullptr;
 
+  SET_MULTICAST(publisherParam);
+
   // Load default XML profile.
   Domain::getDefaultPublisherAttributes(publisherParam);
 
@@ -150,9 +152,9 @@ rmw_create_publisher(
     publisherParam.topic.topicName = topic_name;
   }
 
-  publisherParam.qos.m_disablePositiveACKs.enabled = true;
-  publisherParam.qos.m_disablePositiveACKs.duration =
-          eprosima::fastrtps::Duration_t(eprosima::fastrtps::c_TimeInfinite);
+  // publisherParam.qos.m_disablePositiveACKs.enabled = true;
+  // publisherParam.qos.m_disablePositiveACKs.duration =
+  //         eprosima::fastrtps::Duration_t(eprosima::fastrtps::c_Time10Seconds);
 
   // 1 Heartbeat every 10ms
   // publisherParam.times.heartbeatPeriod.seconds = 0;

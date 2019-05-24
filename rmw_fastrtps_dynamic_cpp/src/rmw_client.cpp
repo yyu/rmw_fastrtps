@@ -142,9 +142,10 @@ rmw_create_client(
   }
   subscriberParam.topic.topicName = topic_name + "Reply";
 
-  subscriberParam.qos.m_disablePositiveACKs.enabled = true;
-  subscriberParam.qos.m_disablePositiveACKs.duration =
-          eprosima::fastrtps::Duration_t(eprosima::fastrtps::c_TimeInfinite);
+  SET_MULTICAST(subscriberParam);
+  // subscriberParam.qos.m_disablePositiveACKs.enabled = true;
+  // subscriberParam.qos.m_disablePositiveACKs.duration =
+  //         eprosima::fastrtps::Duration_t(eprosima::fastrtps::c_Time10Seconds);
 
   if (!impl->leave_middleware_default_qos) {
     publisherParam.qos.m_publishMode.kind = eprosima::fastrtps::ASYNCHRONOUS_PUBLISH_MODE;
@@ -161,9 +162,10 @@ rmw_create_client(
   }
   publisherParam.topic.topicName = topic_name + "Request";
 
-  publisherParam.qos.m_disablePositiveACKs.enabled = true;
-  publisherParam.qos.m_disablePositiveACKs.duration =
-          eprosima::fastrtps::Duration_t(eprosima::fastrtps::c_TimeInfinite);
+  SET_MULTICAST(publisherParam);
+  // publisherParam.qos.m_disablePositiveACKs.enabled = true;
+  // publisherParam.qos.m_disablePositiveACKs.duration =
+  //         eprosima::fastrtps::Duration_t(eprosima::fastrtps::c_Time10Seconds);
 
   RCUTILS_LOG_DEBUG_NAMED(
     "rmw_fastrtps_dynamic_cpp",

@@ -17,4 +17,12 @@
 
 extern const char * const eprosima_fastrtps_identifier;
 
+#include "fastrtps/utils/IPLocator.h"
+
+#define SET_MULTICAST(param) \
+    eprosima::fastrtps::rtps::Locator_t param##loopbackLocator; \
+    eprosima::fastrtps::rtps::IPLocator::createLocator(LOCATOR_KIND_UDPv4, "127.0.0.1", 0, param##loopbackLocator); \
+    param.multicastLocatorList.push_back(param##loopbackLocator); \
+    param.unicastLocatorList.clear();
+
 #endif  // RMW_FASTRTPS_CPP__IDENTIFIER_HPP_

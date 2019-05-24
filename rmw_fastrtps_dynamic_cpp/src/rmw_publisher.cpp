@@ -145,9 +145,10 @@ rmw_create_publisher(
     publisherParam.topic.topicName = topic_name;
   }
 
-  publisherParam.qos.m_disablePositiveACKs.enabled = true;
-  publisherParam.qos.m_disablePositiveACKs.duration =
-          eprosima::fastrtps::Duration_t(eprosima::fastrtps::c_TimeInfinite);
+  SET_MULTICAST(publisherParam);
+  // publisherParam.qos.m_disablePositiveACKs.enabled = true;
+  // publisherParam.qos.m_disablePositiveACKs.duration =
+  //         eprosima::fastrtps::Duration_t(eprosima::fastrtps::c_Time10Seconds);
 
   // 1 Heartbeat every 10ms
   // publisherParam.times.heartbeatPeriod.seconds = 0;

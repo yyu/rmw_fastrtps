@@ -115,6 +115,8 @@ rmw_create_subscription(
   rmw_subscription_t * rmw_subscription = nullptr;
   eprosima::fastrtps::SubscriberAttributes subscriberParam;
 
+  SET_MULTICAST(subscriberParam);
+
   // Load default XML profile.
   Domain::getDefaultSubscriberAttributes(subscriberParam);
 
@@ -148,9 +150,9 @@ rmw_create_subscription(
     subscriberParam.topic.topicName = topic_name;
   }
 
-  subscriberParam.qos.m_disablePositiveACKs.enabled = true;
-  subscriberParam.qos.m_disablePositiveACKs.duration =
-          eprosima::fastrtps::Duration_t(eprosima::fastrtps::c_TimeInfinite);
+  // subscriberParam.qos.m_disablePositiveACKs.enabled = true;
+  // subscriberParam.qos.m_disablePositiveACKs.duration =
+  //         eprosima::fastrtps::Duration_t(eprosima::fastrtps::c_Time10Seconds);
 
   if (!get_datareader_qos(*qos_policies, subscriberParam)) {
     RMW_SET_ERROR_MSG("failed to get datareader qos");

@@ -26,6 +26,7 @@
 
 #include "fastrtps/participant/Participant.h"
 #include "fastrtps/subscriber/Subscriber.h"
+#include "fastrtps/utils/IPLocator.h"
 
 #include "rmw_fastrtps_cpp/identifier.hpp"
 
@@ -115,6 +116,8 @@ rmw_create_subscription(
   rmw_subscription_t * rmw_subscription = nullptr;
   eprosima::fastrtps::SubscriberAttributes subscriberParam;
 
+  SET_MULTICAST(subscriberParam);
+
   // Load default XML profile.
   Domain::getDefaultSubscriberAttributes(subscriberParam);
 
@@ -152,9 +155,13 @@ rmw_create_subscription(
     subscriberParam.topic.topicName = topic_name;
   }
 
-  subscriberParam.qos.m_disablePositiveACKs.enabled = true;
-  subscriberParam.qos.m_disablePositiveACKs.duration =
-          eprosima::fastrtps::Duration_t(eprosima::fastrtps::c_TimeInfinite);
+  // eprosima::fastrtps::rtps::Locator_t loopbackLocator;
+  // eprosima::fastrtps::rtps::IPLocator::createLocator(LOCATOR_KIND_UDPv4, "127.0.0.1", 0, loopbackLocator);
+  // subscriberParam.multicastLocatorList.push_back(loopbackLocator);
+
+  // subscriberParam.qos.m_disablePositiveACKs.enabled = true;
+  // subscriberParam.qos.m_disablePositiveACKs.duration =
+  //         eprosima::fastrtps::Duration_t(eprosima::fastrtps::c_Time10Seconds);
 
   if (!get_datareader_qos(*qos_policies, subscriberParam)) {
     RMW_SET_ERROR_MSG("failed to get datareader qos");
